@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:cashflow/models/modelPortfolio.dart';
+import 'package:cashflow/repository/repositoryPortfolio.dart';
 import 'package:cashflow/shared/sharedDialog.dart';
 import 'package:flutter/material.dart'
     hide
@@ -23,10 +25,18 @@ class ProfileScreenState extends State<ProfileScreen> {
   TextEditingController investedBudgetController = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final portfolio = Portfolio();
+  final portfolio = ModelPortfolio(
+      name: "",
+      isAnInvestment: false,
+      budgetInvested: 0,
+      actualBudget: 0,
+      earnFrom: 0,
+      color: Colors.blue[200]);
 
   Color pickerColor;
   Color currentColor;
+
+  RepositoryPortfolio repoPortfolio = RepositoryPortfolio();
 
   @override
   void initState() {
@@ -90,7 +100,7 @@ class ProfileScreenState extends State<ProfileScreen> {
               decoration: InputDecoration(
                   labelText: 'How do you whish call the new portfolio?'),
               validator: (value) {
-                if (value.isEmpty) {
+                if (value.isEmpty || value == null) {
                   return 'Please enter a valid name';
                 }
               },
@@ -135,24 +145,22 @@ class ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ),
                             actions: <Widget>[
-                              Column(children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    FlatButton(
-                                      color: Colors.green[800],
-                                      onPressed: () {
-                                        currentColor = pickerColor;
-                                        portfolio.color = pickerColor;
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text('SAVE'),
-                                    ),
-                                  ],
-                                ),
-                              ])
+                              FlatButton(
+                                color: Colors.amber[900],
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('CANC'),
+                              ),
+                              FlatButton(
+                                color: Colors.green[800],
+                                onPressed: () {
+                                  currentColor = pickerColor;
+                                  portfolio.color = pickerColor;
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('SAVE'),
+                              ),
                             ],
                           );
                         });
@@ -188,7 +196,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                       return;
                     }
                     setState(() {
-                      if (portfolio.initialBudget > 0) portfolio.getEarn();
+                      if (portfolio.budgetInvested > 0) portfolio.getEarn();
                     });
                   },
                 )),
@@ -211,7 +219,7 @@ class ProfileScreenState extends State<ProfileScreen> {
               onChanged: (bool val) {
                 setState(() {
                   portfolio.isAnInvestment = val;
-                  portfolio.initialBudget = 0;
+                  portfolio.budgetInvested = 0;
                   if (!val) {
                     investedBudgetController.text = "";
                   }
@@ -250,17 +258,17 @@ class ProfileScreenState extends State<ProfileScreen> {
                 onSaved: (!portfolio.isAnInvestment)
                     ? null
                     : (val) => setState(
-                        () => portfolio.initialBudget = double.parse(val)),
+                        () => portfolio.budgetInvested = double.parse(val)),
                 onChanged: (val) {
                   setState(() {
                     print("Budget investedString: " + val);
                     if (val.isEmpty) {
-                      portfolio.initialBudget = 0;
+                      portfolio.budgetInvested = 0;
                       portfolio.earnFrom = 0;
                       return;
                     }
-                    portfolio.initialBudget = double.parse(val);
-                    if (portfolio.initialBudget > 0) portfolio.getEarn();
+                    portfolio.budgetInvested = double.parse(val);
+                    if (portfolio.budgetInvested > 0) portfolio.getEarn();
                   });
                 },
               ),
@@ -313,9 +321,9 @@ class ProfileScreenState extends State<ProfileScreen> {
                       color: Colors.green[800],
                       onPressed: () {
                         final form = _formKey.currentState;
+                        //SUBMIT AND SAVE
                         if (form.validate()) {
                           form.save();
-                          portfolio.save();
                           _showDialog(context);
                         }
                       },
@@ -330,33 +338,23 @@ class ProfileScreenState extends State<ProfileScreen> {
   }
 
   _showDialog(BuildContext context) {
-    Fluttertoast.showToast(msg: "Error");
     Dialogs.confermationDialog(
         context, "SAVE", "Are you sure you want to save??", () {
-      Scaffold.of(context)
-          .showSnackBar(SnackBar(content: Text('Element Saved')));
-//      Navigator.pop(context, true);
+      //generating the new id for saving the portfolio
+      repoPortfolio.getId().then((key) {
+        portfolio.key = key;
+        repoPortfolio.save(portfolio).then((value) {
+          Fluttertoast.showToast(
+              msg: "Element saved",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 14.0);
+          Navigator.pop(context, true);
+        });
+      });
     });
-  }
-}
-
-class Portfolio {
-  int id;
-  String name = '';
-  bool isAnInvestment = false;
-  double initialBudget = 0;
-  double actualBudget = 0;
-  double earnFrom = 0;
-  Color color = Colors.blue[200];
-
-  save() {
-    print(this.toString());
-  }
-
-  getEarn() {
-    print("Actual budget " + actualBudget.toString());
-    print("Initial budget " + initialBudget.toString());
-    earnFrom = actualBudget - initialBudget;
-    return earnFrom;
   }
 }
