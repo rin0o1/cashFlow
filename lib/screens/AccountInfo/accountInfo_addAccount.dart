@@ -12,17 +12,21 @@ import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-class ProfileScreen extends StatefulWidget {
-  ProfileScreen({Key key}) : super(key: key);
+class AddPortfolio extends StatefulWidget {
+  final VoidCallback callBackOnSave;
+
+  AddPortfolio({Key key, this.callBackOnSave}) : super(key: key);
 
   @override
-  State createState() => ProfileScreenState(key: this.key);
+  State createState() =>
+      AddPortfolioState(key: this.key, callBackOnSave: this.callBackOnSave);
 }
 
-class ProfileScreenState extends State<ProfileScreen> {
-  ProfileScreenState({Key key});
+class AddPortfolioState extends State<AddPortfolio> {
+  AddPortfolioState({Key key, this.callBackOnSave});
 
   TextEditingController investedBudgetController = TextEditingController();
+  VoidCallback callBackOnSave;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final portfolio = ModelPortfolio(
@@ -350,6 +354,7 @@ class ProfileScreenState extends State<ProfileScreen> {
             textColor: Colors.white,
             fontSize: 14.0);
         Navigator.pop(context, true);
+        callBackOnSave();
       });
     });
   }

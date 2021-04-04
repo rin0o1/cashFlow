@@ -31,15 +31,14 @@ class ModelPortfolio {
 
   factory ModelPortfolio.fromJson(Map<String, dynamic> jsonMap) {
     return ModelPortfolio(
-      key: jsonMap["key"],
-      date: jsonMap["date"],
-      name: jsonMap["name"],
-      isAnInvestment: jsonMap["isAnInvestment"],
-      budgetInvested: jsonMap["budgetInvested"],
-      actualBudget: jsonMap["actualBudget"],
-      earnFrom: jsonMap["earnFrom"],
-      color: jsonMap["color"],
-    );
+        key: jsonMap["key"],
+        date: DateTime.parse(jsonMap["date"]),
+        name: jsonMap["name"],
+        isAnInvestment: jsonMap["isAnInvestment"],
+        budgetInvested: jsonMap["budgetInvested"],
+        actualBudget: jsonMap["actualBudget"],
+        earnFrom: jsonMap["earnFrom"],
+        color: Color(int.parse(jsonMap["color"])));
   }
 
   Map<String, dynamic> toJson() => {
