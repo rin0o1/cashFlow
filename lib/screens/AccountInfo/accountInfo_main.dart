@@ -4,7 +4,7 @@ import 'package:cashflow/models/modelPortfolio.dart';
 import 'package:cashflow/repository/repositoryPortfolio.dart';
 import 'package:cashflow/screens/AccountInfo/accountInfo_dataSection.dart';
 import 'package:flutter/material.dart';
-
+import 'package:expandable/expandable.dart';
 import 'accountInfo_addAccount.dart';
 
 class AccountInfoMain extends StatefulWidget {
@@ -128,14 +128,21 @@ class AccountInfoMainState extends State<AccountInfoMain> {
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                       )),
-                  Padding(
-                    padding: EdgeInsets.only(right: 5),
-                    child: Text("Earn",
-                        style: TextStyle(
-                          decorationStyle: TextDecorationStyle.wavy,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        )),
+                  Text(
+                    "Earn",
+                    style: TextStyle(
+                      decorationStyle: TextDecorationStyle.wavy,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  Text(
+                    "  ",
+                    style: TextStyle(
+                      decorationStyle: TextDecorationStyle.wavy,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                   )
                 ],
               ),
@@ -173,58 +180,172 @@ class AccountInfoMainState extends State<AccountInfoMain> {
                   itemCount: portfolios.length,
                   itemBuilder: (context, index) {
                     ModelPortfolio p = portfolios[index];
+
                     return Padding(
                         padding: EdgeInsets.fromLTRB(0, 1, 0, 0),
-                        child: Container(
-                            margin: EdgeInsets.only(bottom: 10),
-                            height: 50,
-                            color: Colors.white,
-                            child: Container(
-                                decoration: BoxDecoration(
-                                  border: Border(
-                                      top:
-                                          BorderSide(color: p.color, width: 10),
-                                      bottom: (p.isAnInvestment)
-                                          ? BorderSide(
-                                              color: Colors.orange[400],
-                                              width: 5)
-                                          : BorderSide(width: 0)),
-                                  //color: p.color,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.2),
-                                      spreadRadius: 2,
-                                      blurRadius: 5,
-                                      offset: Offset(
-                                          0, 7), // changes position of shadow
-                                    ),
-                                  ],
-                                ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.only(left: 7),
-                                      child: Text(
-                                        p.name,
-                                        style: TextStyle(fontSize: 17),
-                                      ),
-                                    ),
-                                    Text(p.budgetInvested.toString(),
-                                        style: TextStyle(fontSize: 17)),
-                                    Text(
-                                      p.actualBudget.toString(),
-                                      style: TextStyle(fontSize: 17),
-                                    ),
-                                    Padding(
-                                        padding: EdgeInsets.only(right: 5),
-                                        child: Text(
-                                          p.earnFrom.toString(),
-                                          style: TextStyle(fontSize: 17),
+                        child: ExpandablePanel(
+                            theme: const ExpandableThemeData(
+                              tapBodyToExpand: true,
+                              tapBodyToCollapse: true,
+                              hasIcon: false,
+                            ),
+                            expanded: Container(
+                              height: 20,
+                              margin: EdgeInsets.only(bottom: 5),
+                              padding: EdgeInsets.only(left: 10, right: 10),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  FlatButton(
+                                    color: Colors.red[600],
+                                    onPressed: () {},
+                                    child: Container(
+                                        width: 80,
+                                        height: 20,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  EdgeInsets.only(right: 5),
+                                              child: Icon(
+                                                Icons.delete,
+                                                color: Colors.white,
+                                                size: 18,
+                                              ),
+                                            ),
+                                            Text("DELETE",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  decorationStyle:
+                                                      TextDecorationStyle.wavy,
+                                                  fontSize: 14,
+                                                )),
+                                          ],
                                         )),
-                                  ],
-                                ))));
+                                  ),
+                                  FlatButton(
+                                    color: Colors.yellow[700],
+                                    onPressed: () {},
+                                    child: Container(
+                                        width: 80,
+                                        height: 20,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  EdgeInsets.only(right: 5),
+                                              child: Icon(
+                                                Icons.info,
+                                                color: Colors.white,
+                                                size: 18,
+                                              ),
+                                            ),
+                                            Text("INFO",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  decorationStyle:
+                                                      TextDecorationStyle.wavy,
+                                                  fontSize: 14,
+                                                )),
+                                          ],
+                                        )),
+                                  ),
+                                  FlatButton(
+                                    color: Colors.orange,
+                                    onPressed: () {},
+                                    child: Container(
+                                        width: 80,
+                                        height: 20,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  EdgeInsets.only(right: 5),
+                                              child: Icon(
+                                                Icons.edit,
+                                                color: Colors.white,
+                                                size: 18,
+                                              ),
+                                            ),
+                                            Text("EDIT",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  decorationStyle:
+                                                      TextDecorationStyle.wavy,
+                                                  fontSize: 14,
+                                                )),
+                                          ],
+                                        )),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            collapsed: Container(),
+                            header: Container(
+                                margin: EdgeInsets.only(bottom: 10),
+                                height: 50,
+                                color: Colors.white,
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                          top: BorderSide(
+                                              color: p.color, width: 10),
+                                          bottom: (p.isAnInvestment)
+                                              ? BorderSide(
+                                                  color: Colors.orange[400],
+                                                  width: 5)
+                                              : BorderSide(width: 0)),
+                                      //color: p.color,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.2),
+                                          spreadRadius: 2,
+                                          blurRadius: 5,
+                                          offset: Offset(0,
+                                              7), // changes position of shadow
+                                        ),
+                                      ],
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.only(left: 7),
+                                          child: Text(
+                                            p.name,
+                                            style: TextStyle(fontSize: 17),
+                                          ),
+                                        ),
+                                        Text(p.budgetInvested.toString(),
+                                            style: TextStyle(fontSize: 17)),
+                                        Text(
+                                          p.actualBudget.toString(),
+                                          style: TextStyle(fontSize: 17),
+                                        ),
+                                        Text(p.earnFrom.toString(),
+                                            style: TextStyle(fontSize: 17)),
+                                        ExpandableIcon(
+                                          theme: const ExpandableThemeData(
+                                            expandIcon:
+                                                Icons.arrow_back_ios_outlined,
+                                            iconColor: Colors.black,
+                                            iconSize: 24.0,
+                                            iconRotationAngle: -3.141592654 / 2,
+                                            iconPadding:
+                                                EdgeInsets.only(right: 5),
+                                            hasIcon: false,
+                                          ),
+                                        ),
+                                      ],
+                                    )))));
                   })
             ])));
   }
