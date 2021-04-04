@@ -340,20 +340,16 @@ class ProfileScreenState extends State<ProfileScreen> {
   _showDialog(BuildContext context) {
     Dialogs.confermationDialog(
         context, "SAVE", "Are you sure you want to save??", () {
-      //generating the new id for saving the portfolio
-      repoPortfolio.getId().then((key) {
-        portfolio.key = key;
-        repoPortfolio.save(portfolio).then((value) {
-          Fluttertoast.showToast(
-              msg: "Element saved",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Colors.red,
-              textColor: Colors.white,
-              fontSize: 14.0);
-          Navigator.pop(context, true);
-        });
+      repoPortfolio.save(portfolio).then((value) {
+        Fluttertoast.showToast(
+            msg: "Element saved",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 14.0);
+        Navigator.pop(context, true);
       });
     });
   }

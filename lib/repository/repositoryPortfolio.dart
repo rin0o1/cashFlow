@@ -9,14 +9,15 @@ class RepositoryPortfolio {
 
   Future save(ModelPortfolio portfolio) async {
     prefs = await SharedPreferences.getInstance();
-    print(json.encode(portfolio.toJson()));
-    /*await prefs.setString(
-        'portfolio_' + portfolio.id.toString(), json.encode(portfolio));*/
+    buildKey().then((value) {
+      portfolio.key = value;
+      print(json.encode(portfolio.toJson()));
+      prefs.setString('portfolio_' + portfolio.key, json.encode(portfolio));
+    });
   }
 
   Future<ModelPortfolio> getPortfolioFromId(int id) async {
     prefs = await SharedPreferences.getInstance();
-
     ModelPortfolio modelPortfolio = ModelPortfolio.fromJson(
         json.decode(prefs.get('portfolio_' + id.toString())));
     return modelPortfolio;
@@ -41,7 +42,7 @@ class RepositoryPortfolio {
     return result;
   }
 
-  Future<String> getId() async {
+  Future<String> buildKey() async {
     prefs = await SharedPreferences.getInstance();
     //get last id value
     String lastId = prefs.getString(Keys.PORTFOLIO_LASTID) ?? "-1";

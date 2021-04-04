@@ -1,3 +1,5 @@
+import 'package:cashflow/models/modelPortfolio.dart';
+import 'package:cashflow/repository/repositoryPortfolio.dart';
 import 'package:flutter/material.dart';
 
 import 'accountInfo_addAccount.dart';
@@ -10,10 +12,32 @@ class AccountInfoMain extends StatefulWidget {
 }
 
 class AccountInfoMainState extends State<AccountInfoMain> {
+  List<ModelPortfolio> portfolios;
+  RepositoryPortfolio repPort = RepositoryPortfolio();
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    if (mounted) {
+      getData();
+    }
+  }
+
+  getData() async {
+    await repPort.getPortfolioList().then((data) {
+      setState(() {
+        portfolios = data;
+        print(portfolios);
+        isLoading = false;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Column(
+    return Stack(children: [
+      Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Row(
@@ -58,10 +82,22 @@ class AccountInfoMainState extends State<AccountInfoMain> {
             children: [
               buildDataSection(context),
             ],
-          )
+          ),
         ],
       ),
-    );
+      Positioned(
+        child: isLoading
+            ? Container(
+                child: Center(
+                  child: CircularProgressIndicator(
+                      valueColor:
+                          AlwaysStoppedAnimation<Color>(Colors.deepOrange)),
+                ),
+                color: Colors.black.withOpacity(0.3),
+              )
+            : Container(),
+      )
+    ]);
   }
 }
 
