@@ -25,7 +25,7 @@ class HomePageState extends State<HomePage> {
             bottom: TabBar(
               tabs: <Widget>[
                 Tab(
-                  icon: Icon(Icons.account_balance),
+                  icon: Icon(Icons.table_chart),
                 ),
                 Tab(
                   icon: Icon(Icons.pie_chart),

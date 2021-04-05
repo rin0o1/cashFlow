@@ -27,6 +27,8 @@ class RepositoryPortfolio {
   Future<List<ModelPortfolio>> getPortfolioList() async {
     List<ModelPortfolio> result = new List<ModelPortfolio>();
     return await SharedPreferences.getInstance().then((prefs) {
+      //JUST FOR RESETTING STUFF
+
       String _keys = prefs.get(Keys.PORTFOLIO_LOOKUPIDS);
       if (_keys == null) {
         return result;
@@ -71,6 +73,29 @@ class RepositoryPortfolio {
       String updatedList = getIdsUsed + id + "_";
       //update the list
       prefs.setString(Keys.PORTFOLIO_LOOKUPIDS, updatedList);
+    });
+  }
+
+  Future deleteFromKey(key) async {
+    return await SharedPreferences.getInstance().then((prefs) {
+      //remove the object
+      prefs.remove(key);
+      //update the lookup list
+      //get the lookup list
+      String lookuplist = prefs.get(Keys.PORTFOLIO_LOOKUPIDS);
+      //getting the last id
+      String stringToReplace = (key.toString().split("_")[2]) + "_";
+      //update the lookuplist
+      lookuplist = lookuplist.replaceAll(stringToReplace, "");
+      prefs.setString(Keys.PORTFOLIO_LOOKUPIDS, lookuplist);
+    });
+  }
+
+  Future resetData() async {
+    return await SharedPreferences.getInstance().then((prefs) {
+      prefs.remove(Keys.PORTFOLIO_ID);
+      prefs.remove(Keys.PORTFOLIO_LASTID);
+      prefs.remove(Keys.PORTFOLIO_LOOKUPIDS);
     });
   }
 }
