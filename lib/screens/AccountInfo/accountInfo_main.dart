@@ -38,18 +38,28 @@ class AccountInfoMainState extends State<AccountInfoMain> {
       setState(() {
         portfolios = data;
         //calculatin totals variables
-        for (ModelPortfolio p in portfolios) {
-          total += p.actualBudget;
-          if (p.isAnInvestment) {
-            totalInvested += p.budgetInvested;
-            actualInvested += p.actualBudget;
-            totalEarn += p.earnFrom;
-          }
-        }
-        usable = total - totalInvested;
+        calculatingTotalValues();
         isLoading = false;
       });
     });
+  }
+
+  void calculatingTotalValues() {
+    total = 0;
+    usable = 0;
+    totalInvested = 0;
+    actualInvested = 0;
+    totalEarn = 0;
+
+    for (ModelPortfolio p in portfolios) {
+      total += p.actualBudget;
+      if (p.isAnInvestment) {
+        totalInvested += p.budgetInvested;
+        actualInvested += p.actualBudget;
+        totalEarn += p.earnFrom;
+      }
+    }
+    usable = total - totalInvested;
   }
 
   @override
@@ -360,14 +370,14 @@ class AccountInfoMainState extends State<AccountInfoMain> {
                                         Container(
                                           width: 80,
                                           child: Text(
-                                            p.budgetInvested.toString(),
+                                            p.budgetInvested.toString() + "€",
                                             style: TextStyle(fontSize: 17),
                                           ),
                                         ),
                                         Container(
                                           width: 80,
                                           child: Text(
-                                            p.actualBudget.toString(),
+                                            p.actualBudget.toString() + "€",
                                             style: TextStyle(fontSize: 17),
                                           ),
                                         ),
@@ -378,7 +388,7 @@ class AccountInfoMainState extends State<AccountInfoMain> {
                                                     : Colors.red[200],
                                                 width: 80,
                                                 child: Text(
-                                                    p.earnFrom.toString(),
+                                                    p.earnFrom.toString() + "€",
                                                     style: TextStyle(
                                                         fontSize: 16,
                                                         fontWeight:
@@ -423,25 +433,60 @@ class AccountInfoMainState extends State<AccountInfoMain> {
               begin: Alignment.topCenter,
               colors: [Colors.indigo[50], Colors.amberAccent])),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Row(
-            children: [Text("TOTAL " + total.toString() ?? "")],
-          ),
-          Row(
-            children: [Text("USABLE " + usable.toString() ?? "")],
-          ),
-          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("TOTAL INVESTED " + totalInvested.toString() ?? "")
+              Text("Total: " + total.toString() + "€" ?? "",
+                  style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.purple[600]))
             ],
           ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("ACTUAL INVESTED " + actualInvested.toString() ?? "")
+              Text("Usable: " + usable.toString() + "€" ?? "",
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue[700]))
             ],
           ),
           Row(
-            children: [Text("TOTAL EARN " + totalEarn.toString()) ?? ""],
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("Total earn: " + totalEarn.toString() + "€",
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: (totalEarn >= 0)
+                              ? Colors.green[800]
+                              : Colors.red[800])) ??
+                  ""
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Text("Total invested: " + totalInvested.toString() + "€" ?? "",
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: (totalEarn >= 0)
+                          ? Colors.green[900]
+                          : Colors.red[800])),
+              Text(
+                "Acutual invested: " + actualInvested.toString() + "€" ?? "",
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color:
+                        (totalEarn >= 0) ? Colors.green[900] : Colors.red[800]),
+              )
+            ],
           )
         ],
       ),
@@ -452,10 +497,11 @@ class AccountInfoMainState extends State<AccountInfoMain> {
     Dialogs.confermationDialog(
         context, "DELETE", "Are you sure you want to delete this element??",
         () {
-      setState(() {
+      this.setState(() {
         repPort.deleteFromKey(key).then((x) {
           isLoading = true;
           getData();
+          //calculatingTotalValues();
         });
       });
     });
