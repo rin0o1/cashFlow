@@ -4,6 +4,7 @@ import 'package:cashflow/models/modelPortfolio.dart';
 import 'package:cashflow/repository/repositoryPortfolio.dart';
 import 'package:cashflow/screens/AccountInfo/accountInfo_dataSection.dart';
 import 'package:cashflow/shared/sharedDialog.dart';
+import 'package:cashflow/shared/webView.dart';
 import 'package:flutter/material.dart';
 import 'package:expandable/expandable.dart';
 import 'accountInfo_addAccount.dart';
@@ -29,7 +30,6 @@ class AccountInfoMainState extends State<AccountInfoMain> {
   @override
   void initState() {
     super.initState();
-
     getData();
   }
 
@@ -91,8 +91,20 @@ class AccountInfoMainState extends State<AccountInfoMain> {
                                     isLoading = true;
                                     getData();
                                   });
-                                },
-                              )));
+                  },)));
+                },
+              ),
+            ),
+            Flexible(
+              child: FlatButton(
+                height: 50,
+                color: Colors.yellow,
+                child: Icon(Icons.add),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => WebViewExample()));
                 },
               ),
             )
@@ -149,7 +161,7 @@ class AccountInfoMainState extends State<AccountInfoMain> {
                   Container(
                     height: 40,
                     width: 80,
-                    child: Text("Budget",
+                    child: Text("Invested",
                         style: TextStyle(
                           decorationStyle: TextDecorationStyle.wavy,
                           fontWeight: FontWeight.bold,
@@ -479,7 +491,7 @@ class AccountInfoMainState extends State<AccountInfoMain> {
                           ? Colors.green[900]
                           : Colors.red[800])),
               Text(
-                "Acutual invested: " + actualInvested.toString() + "€" ?? "",
+                "Actual invested: " + actualInvested.toString() + "€" ?? "",
                 style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,

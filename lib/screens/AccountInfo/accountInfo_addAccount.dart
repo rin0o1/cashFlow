@@ -102,7 +102,7 @@ class AddPortfolioState extends State<AddPortfolio> {
             //NAME
             TextFormField(
               decoration: InputDecoration(
-                  labelText: 'How do you whish call the new portfolio?'),
+                  labelText: 'How do you wish call the new portfolio?'),
               validator: (value) {
                 if (value.isEmpty || value == null) {
                   return 'Please enter a valid name';
